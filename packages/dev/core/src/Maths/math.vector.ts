@@ -42,6 +42,24 @@ export class Vector2 {
         public y: number = 0
     ) {}
 
+    private static _SharedType: any;
+
+    /**
+     * @returns a shared object representing a 2-dimensional vector
+     */
+    public static MakeNewShared(x: number = 0, y: number = 0): any {
+        if (window.SharedStructType) {
+            if (!Vector2._SharedType) {
+                Vector2._SharedType = new window.SharedStructType(["x", "y"]);
+            }
+            const shared_instance = new Vector2._SharedType();
+            shared_instance.x = x;
+            shared_instance.y = y;
+            return shared_instance;
+        }
+        return new Vector2(x, y);
+    }
+
     /**
      * Gets a string with the Vector2 coordinates
      * @returns a string with the Vector2 coordinates
@@ -121,6 +139,19 @@ export class Vector2 {
     }
 
     /**
+     * Sets the shared Vector2 coordinates with the given shared Vector2 coordinates
+     * Example Playground https://playground.babylonjs.com/#QYBWV4#24
+     * @param target the shared Vector2 to modify
+     * @param source defines the source Vector2
+     * @returns the current updated Vector2
+     */
+    public static copyFrom(target: any, source: any): any {
+        target.x = source.x;
+        target.y = source.y;
+        return target;
+    }
+
+    /**
      * Sets the Vector2 coordinates with the given floats
      * Example Playground https://playground.babylonjs.com/#QYBWV4#25
      * @param x defines the first coordinate
@@ -131,6 +162,20 @@ export class Vector2 {
         this.x = x;
         this.y = y;
         return this;
+    }
+
+    /**
+     * Sets the shared Vector2 coordinates with the given floats
+     * Example Playground https://playground.babylonjs.com/#QYBWV4#25
+     * @param target the shared Vector2 to modify
+     * @param x defines the first coordinate
+     * @param y defines the second coordinate
+     * @returns the updated shared Vector2
+     */
+    public static copyFromFloats(target: any, x: number, y: number): any {
+        target.x = x;
+        target.y = y;
+        return target;
     }
 
     /**
@@ -341,6 +386,19 @@ export class Vector2 {
         this.x *= scale;
         this.y *= scale;
         return this;
+    }
+
+    /**
+     * Multiply the shared Vector2 coordinates by
+     * Example Playground https://playground.babylonjs.com/#QYBWV4#59
+     * @param target the shared Vector2 to modify
+     * @param scale defines the scaling factor
+     * @returns the updated shared Vector2
+     */
+    public static scaleInPlace(target: any, scale: number): any {
+        target.x *= scale;
+        target.y *= scale;
+        return target;
     }
 
     /**
@@ -936,6 +994,25 @@ export class Vector3 {
         this._z = z;
     }
 
+    private static _SharedType: any;
+
+    /**
+     * @returns a shared object representing a 3-dimensional vector
+     */
+    public static MakeNewShared(x: number = 0, y: number = 0, z: number = 0): any {
+        if (window.SharedStructType) {
+            if (!Vector3._SharedType) {
+                Vector3._SharedType = new window.SharedStructType(["x", "y", "z"]);
+            }
+            const shared_instance = new Vector3._SharedType();
+            shared_instance.x = x;
+            shared_instance.y = y;
+            shared_instance.z = z;
+            return shared_instance;
+        }
+        return new Vector3(x, y, z);
+    }
+
     /**
      * Creates a string representation of the Vector3
      * Example Playground https://playground.babylonjs.com/#R1F8YU#67
@@ -1024,6 +1101,19 @@ export class Vector3 {
      */
     public addInPlace(otherVector: DeepImmutable<Vector3>): this {
         return this.addInPlaceFromFloats(otherVector._x, otherVector._y, otherVector._z);
+    }
+
+    /**
+     * Adds the given vector to the given shared Vector3
+     * @param target the shared Vector3 to modify
+     * @param otherVector defines the second operand
+     * @returns the current updated Vector3
+     */
+    public static addInPlace(target: any, otherVector: DeepImmutable<Vector3>): any {
+        target.x += otherVector.x;
+        target.y += otherVector.y;
+        target.z += otherVector.z;
+        return target;
     }
 
     /**
@@ -1166,6 +1256,19 @@ export class Vector3 {
     }
 
     /**
+     * Multiplies the shared Vector3 coordinates by the float "scale"
+     * @param target the shared Vector2 to modify
+     * @param scale defines the scaling factor
+     * @returns the updated shared Vector2
+     */
+    public static scaleInPlace(target: any, scale: number): any {
+        target.x *= scale;
+        target.y *= scale;
+        target.z *= scale;
+        return target;
+    }
+    
+    /**
      * Returns a new Vector3 set with the current Vector3 coordinates multiplied by the float "scale"
      * Example Playground https://playground.babylonjs.com/#R1F8YU#53
      * @param scale defines the multiplier factor
@@ -1186,6 +1289,19 @@ export class Vector3 {
         return result.copyFromFloats(this._x * scale, this._y * scale, this._z * scale);
     }
 
+    /**
+     * Multiplies the given shared Vector3 coordinates by the float "scale" and stores the result in the given shared vector "result" coordinates
+     * Example Playground https://playground.babylonjs.com/#R1F8YU#57
+     * @param source the shared Vector3 to start from
+     * @param scale defines the multiplier factor
+     * @param result defines the shared Vector3 object where to store the result
+     * @returns the result
+     */
+    public static scaleToRef(source: any, scale: number, result: any): any {
+        Vector3.copyFromFloats(result, source.x * scale, source.y * scale, source.z * scale);
+        return result;
+    }
+    
     /**
      * Creates a vector normal (perpendicular) to the current Vector3 and stores the result in the given vector
      * Out of the infinite possibilities the normal chosen is the one formed by rotating the current vector
@@ -1713,6 +1829,16 @@ export class Vector3 {
     }
 
     /**
+     * Copies the given vector coordinates to the given shared Vector3 ones
+     * @param target shared Vector3 to modify
+     * @param source defines the source Vector3
+     * @returns the current updated Vector3
+     */
+        public static copyFrom(target: any, source: DeepImmutable<Vector3>): any {
+            return Vector3.copyFromFloats(target, source.x, source.y, source.z);
+        }
+    
+    /**
      * Copies the given floats to the current Vector3 coordinates
      * Example Playground https://playground.babylonjs.com/#R1F8YU#13
      * @param x defines the x coordinate of the operand
@@ -1725,6 +1851,21 @@ export class Vector3 {
         this.y = y;
         this.z = z;
         return this;
+    }
+
+    /**
+     * Copies the given floats to the given shared Vector3 coordinates
+     * @param target shared Vector3 to modify
+     * @param x defines the x coordinate of the operand
+     * @param y defines the y coordinate of the operand
+     * @param z defines the z coordinate of the operand
+     * @returns the current updated Vector3
+     */
+    public static copyFromFloats(target: any, x: number, y: number, z: number): any {
+        target.x = x;
+        target.y = y;
+        target.z = z;
+        return target;
     }
 
     /**

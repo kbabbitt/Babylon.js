@@ -21,12 +21,12 @@ export class Particle {
     /**
      * The world position of the particle in the scene.
      */
-    public position = Vector3.Zero();
+    public position = Vector3.MakeNewShared(0, 0, 0);
 
     /**
      * The world direction of the particle in the scene.
      */
-    public direction = Vector3.Zero();
+    public direction = Vector3.MakeNewShared(0, 0, 0);
 
     /**
      * The color of the particle.
@@ -56,7 +56,7 @@ export class Particle {
     /**
      * The current scale of the particle.
      */
-    public scale = new Vector2(1, 1);
+    public scale = Vector2.MakeNewShared(1, 1);
 
     /**
      * The current angle of the particle.
@@ -246,7 +246,7 @@ export class Particle {
      * @param other the particle to copy the information to.
      */
     public copyTo(other: Particle) {
-        other.position.copyFrom(this.position);
+        Vector3.copyFrom(other.position, this.position);
         if (this._initialDirection) {
             if (other._initialDirection) {
                 other._initialDirection.copyFrom(this._initialDirection);
@@ -256,7 +256,7 @@ export class Particle {
         } else {
             other._initialDirection = null;
         }
-        other.direction.copyFrom(this.direction);
+        Vector3.copyFrom(other.direction, this.direction);
         if (this._localPosition) {
             if (other._localPosition) {
                 other._localPosition.copyFrom(this._localPosition);
@@ -270,7 +270,7 @@ export class Particle {
         other.age = this.age;
         other._randomCellOffset = this._randomCellOffset;
         other.size = this.size;
-        other.scale.copyFrom(this.scale);
+        Vector2.copyFrom(other.scale, this.scale);
         other.angle = this.angle;
         other.angularSpeed = this.angularSpeed;
         other.particleSystem = this.particleSystem;

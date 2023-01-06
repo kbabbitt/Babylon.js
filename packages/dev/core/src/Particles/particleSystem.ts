@@ -3,7 +3,7 @@ import type { Immutable, Nullable } from "../types";
 import { FactorGradient, ColorGradient, Color3Gradient, GradientHelper } from "../Misc/gradients";
 import type { Observer } from "../Misc/observable";
 import { Observable } from "../Misc/observable";
-import { Vector3, Matrix, TmpVectors, Vector4 } from "../Maths/math.vector";
+import { Vector3, Matrix, TmpVectors, Vector4, Vector2 } from "../Maths/math.vector";
 import { Scalar } from "../Maths/math.scalar";
 import { VertexBuffer, Buffer } from "../Buffers/buffer";
 
@@ -1561,7 +1561,7 @@ export class ParticleSystem extends BaseParticleSystem implements IDisposable, I
                 particle._initialDirection = null;
             }
 
-            particle.direction.scaleInPlace(emitPower);
+            Vector3.scaleInPlace(particle.direction, emitPower);
 
             // Size
             if (!this._sizeGradients || this._sizeGradients.length === 0) {
@@ -1578,7 +1578,7 @@ export class ParticleSystem extends BaseParticleSystem implements IDisposable, I
                 }
             }
             // Size and scale
-            particle.scale.copyFromFloats(Scalar.RandomRange(this.minScaleX, this.maxScaleX), Scalar.RandomRange(this.minScaleY, this.maxScaleY));
+            Vector2.copyFromFloats(particle.scale, Scalar.RandomRange(this.minScaleX, this.maxScaleX), Scalar.RandomRange(this.minScaleY, this.maxScaleY));
 
             // Adjust scale by start size
             if (this._startSizeGradients && this._startSizeGradients[0] && this.targetStopDuration) {
@@ -1591,7 +1591,7 @@ export class ParticleSystem extends BaseParticleSystem implements IDisposable, I
                     }
 
                     const value = Scalar.Lerp(this._currentStartSize1, this._currentStartSize2, scale);
-                    particle.scale.scaleInPlace(value);
+                    Vector2.scaleInPlace(particle.scale, value);
                 });
             }
 
@@ -1675,7 +1675,7 @@ export class ParticleSystem extends BaseParticleSystem implements IDisposable, I
             }
 
             // Inherited Velocity
-            particle.direction.addInPlace(this._inheritedVelocityOffset);
+            Vector3.addInPlace(particle.direction, this._inheritedVelocityOffset);
 
             // Ramp
             if (this._useRampGradients) {
