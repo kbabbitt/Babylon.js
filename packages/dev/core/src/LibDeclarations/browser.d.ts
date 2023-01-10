@@ -20,6 +20,7 @@ interface Window {
     msURL: typeof URL;
     DracoDecoderModule: any;
     setImmediate(handler: (...args: any[]) => void): number;
+    SharedStructType : any;
 }
 
 interface WorkerGlobalScope {

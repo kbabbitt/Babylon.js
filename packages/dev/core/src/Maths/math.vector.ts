@@ -882,17 +882,41 @@ export class Vector3 {
     private static _LeftReadOnly = Vector3.Left() as DeepImmutable<Vector3>;
     private static _ZeroReadOnly = Vector3.Zero() as DeepImmutable<Vector3>;
 
+    /** Data storage */
+    private static _SharedDataStorageType: any;
+    private _data: any;
+    
     /** @internal */
-    public _x: number;
+    public get _x() {
+        return this._data._x;
+    }
+    public set _x(value: number) {
+        this._data._x = value;
+    }
 
     /** @internal */
-    public _y: number;
+    public get _y() {
+        return this._data._y;
+    }
+    public set _y(value: number) {
+        this._data._y = value;
+    }
 
     /** @internal */
-    public _z: number;
+    public get _z() {
+        return this._data._z;
+    }
+    public set _z(value: number) {
+        this._data._z = value;
+    }
 
     /** @internal */
-    public _isDirty = true;
+    public get _isDirty() {
+        return this._data._isDirty;
+    }
+    public set _isDirty(value: boolean) {
+        this._data._isDirty = value;
+    }
 
     /** Gets or sets the x coordinate */
     public get x() {
@@ -924,6 +948,16 @@ export class Vector3 {
         this._isDirty = true;
     }
 
+    /** Flattens a Vector3 to a shared struct. */
+    public toSharedStruct() : any {
+        return this._data;
+    }
+
+    /** Unflattens a Vector3 from a shared struct. */
+    public fromSharedStruct(data: any) {
+        this._data = data;
+    }
+
     /**
      * Creates a new Vector3 object from the given x, y, z (floats) coordinates.
      * @param x defines the first coordinates (on X axis)
@@ -931,9 +965,18 @@ export class Vector3 {
      * @param z defines the third coordinates (on Z axis)
      */
     constructor(x: number = 0, y: number = 0, z: number = 0) {
-        this._x = x;
-        this._y = y;
-        this._z = z;
+        if (window.SharedStructType) {
+            if (!Vector3._SharedDataStorageType) {
+                Vector3._SharedDataStorageType = new window.SharedStructType(["_x", "_y", "_z", "_isDirty"]);
+            }
+            this._data = new Vector3._SharedDataStorageType();
+            this._data._x = x;
+            this._data._y = y;
+            this._data._z = z;
+            this._data._isDirty = true;
+        } else {
+            this._data = {_x: x, _y: y, _z: z, _isDirty: false};
+        }
     }
 
     /**

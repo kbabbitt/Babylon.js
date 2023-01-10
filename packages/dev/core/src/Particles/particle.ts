@@ -144,6 +144,36 @@ export class Particle {
     /** @internal */
     public _localPosition?: Vector3;
 
+    /** Data storage */
+    private static _SharedDataStorageType: any;
+
+    /** Flatten a Particle to a shared struct. (Partial) */
+    public toSharedStruct(): any {
+        if (window.SharedStructType) {
+            if (!Particle._SharedDataStorageType) {
+                Particle._SharedDataStorageType = new window.SharedStructType(["id", "position", "direction"]);
+            }
+            const data = new Particle._SharedDataStorageType();
+            data.id = this.id;
+            data.position = this.position.toSharedStruct();
+            data.direction = this.direction.toSharedStruct();
+            return data;
+        } else {
+            return this;
+        }
+    }
+
+    /** Unflatten a Particle from a shared struct. (Partial) */
+    public fromSharedStruct(data: any) {
+        if (window.SharedStructType) {
+            this.id = data.id;
+            this.position.fromSharedStruct(data.position);
+            this.direction.fromSharedStruct(data.direction);
+        } else {
+            data.copyTo(this);
+        }
+    }
+
     /**
      * Creates a new instance Particle
      * @param particleSystem the particle system the particle belongs to
